@@ -1,0 +1,150 @@
+AI-Powered Financial Management App - Development Prompt (Vertex AI + TiDB)
+
+Project Overview
+
+Build a Python backend system for an early wage access app with AI-driven financial goal management using money jars/buckets, deployed on Vertex AI with TiDB as the database.
+
+
+
+Core Features to Implement
+
+1. Early Wage Access System
+
+Daily wage calculation and disbursement
+Integration with employer payroll systems
+Transaction tracking and limits
+
+2. Money Jars (Buckets) Management
+
+Create/update/delete financial goal buckets
+Track bucket balances and progress
+Support multiple concurrent goals
+
+3. AI Agent for Smart Allocation
+
+Analyze user financial statements
+Process monthly salary data
+Learn spending patterns
+Auto-allocate funds to buckets based on:
+
+Income levels
+Spending habits
+Financial goals priority
+Risk tolerance
+
+
+4. Data Extraction via MCP (Model Context Protocol)
+
+Extract financial data from emails
+Process uploaded documents (PDF, images, bank statements)
+Alternative: Use LangChain with document loaders if MCP doesn't fit
+
+
+Technical Stack
+
+Backend Framework
+
+Code
+# FastAPI for REST API
+# Python 3.10+
+# Async/await for performance
+
+Database
+
+Code
+- Primary: TiDB Serverless (MySQL-compatible distributed database)
+- ORM: SQLAlchemy with async support (asyncmy driver)
+- Migrations: Alembic
+- Connection: mysql+asyncmy://
+
+AI/ML Components
+
+Code
+- Vertex AI for model deployment and hosting
+- Gemini API for document understanding
+- LangChain for orchestration
+- Vertex AI Vector Search for embeddings
+- Vertex AI Prediction endpoints
+
+Deployment
+
+Code
+- Vertex AI Custom Training & Prediction
+- Vertex AI Workbench for development
+- Vertex AI Endpoints for model serving
+- Google Cloud Storage for document storage
+- Cloud Run (optional) or Vertex AI serving for API
+
+
+Project Structure
+
+Code
+project-root/
+├── .env                          # Environment variables
+├── .env.example                  # Template for environment variables
+├── requirements.txt              # Python dependencies
+├── alembic/                      # Database migrations
+├── app/
+│   ├── __init__.py
+│   ├── main.py                   # FastAPI application entry
+│   ├── config.py                 # Configuration management
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── v1/
+│   │   │   ├── __init__.py
+│   │   │   ├── auth.py           # Authentication endpoints
+│   │   │   ├── wages.py          # Early wage access endpoints
+│   │   │   ├── buckets.py        # Money jars management
+│   │   │   ├── ai_agent.py       # AI allocation endpoints
+│   │   │   └── documents.py      # Document upload/processing
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── user.py               # User model
+│   │   ├── transaction.py        # Transaction model
+│   │   ├── bucket.py             # Money jar model
+│   │   └── financial_data.py     # Financial statements model
+│   ├── schemas/
+│   │   ├── __init__.py
+│   │   ├── user.py               # Pydantic schemas
+│   │   ├── transaction.py
+│   │   ├── bucket.py
+│   │   └── ai_allocation.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── wage_service.py       # Wage calculation logic
+│   │   ├── bucket_service.py     # Bucket management
+│   │   ├── ai_agent_service.py   # AI allocation logic
+│   │   ├── document_processor.py # MCP/document extraction
+│   │   └── email_parser.py       # Email data extraction
+│   ├── ai/
+│   │   ├── __init__.py
+│   │   ├── vertex_client.py      # Vertex AI integration
+│   │   ├── gemini_client.py      # Gemini API client
+│   │   ├── allocation_model.py   # AI allocation logic
+│   │   ├── spending_analyzer.py  # Spending pattern analysis
+│   │   └── vector_search.py      # Vertex AI Vector Search
+│   ├── mcp/
+│   │   ├── __init__.py
+│   │   ├── mcp_client.py         # MCP protocol implementation
+│   │   └── extractors.py         # Data extraction logic
+│   ├── database/
+│   │   ├── __init__.py
+│   │   ├── session.py            # TiDB session management
+│   │   └── base.py               # Base model class
+│   └── utils/
+│       ├── __init__.py
+│       ├── security.py           # Authentication/encryption
+│       └── validators.py         # Input validation
+├── tests/
+│   ├── __init__.py
+│   ├── test_api/
+│   ├── test_services/
+│   └── test_ai/
+├── notebooks/                     # Vertex AI Workbench notebooks
+│   ├── model_training.ipynb
+│   └── data_analysis.ipynb
+└── deployment/
+    ├── Dockerfile
+    ├── vertex_training.py         # Vertex AI custom training
+    ├── vertex_deployment.yaml     # Vertex AI deployment config
+    └── model_serving.py           # Custom prediction handler
