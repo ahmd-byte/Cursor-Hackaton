@@ -113,6 +113,14 @@ class User(BaseModel):
         doc="Whether the user's email is verified"
     )
     
+    # Tiered savings configuration
+    current_savings_tier = Column(
+        Integer,
+        default=1,
+        nullable=False,
+        doc="Current savings tier: 1=20%, 2=15%, 3+=5%"
+    )
+    
     # Financial profile for AI allocation
     risk_tolerance = Column(
         Integer,

@@ -169,6 +169,91 @@ async def payroll_webhook(
 
 
 @router.get(
+    "/daily-calculation",
+    summary="Get daily pay calculation",
+    description="Get tiered daily pay calculation with savings allocation."
+)
+async def get_daily_calculation(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_async_session)
+) -> dict:
+    """
+    Get the tiered daily pay calculation.
+    
+    Formula:
+    - Y (daily income) = monthly_salary / 30
+    - Z (savings) = Y * tier_percentage
+    - Max daily pay = Y - Z
+    
+    Tier percentages:
+    - Month 1: 20%
+    - Month 2: 15%
+    - Month 3+: 5%
+    
+    The savings amount (Z) is automatically allocated to your money jars by AI.
+    """
+    service = WageService(db)
+    return service.calculate_daily_amounts(current_user)
+
+
+@router.post(
+    "/allocate-savings",
+    summary="Allocate daily savings to buckets",
+    description="Trigger AI to allocate daily savings (Z) to money jars."
+)
+async def allocate_daily_savings(
+    use_ai: bool = Query(True, description="Use AI for smart allocation"),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_async_session)
+) -> dict:
+    """
+    Allocate the daily savings amount (Z) to user's money jars.
+    
+    The AI agent analyzes your buckets and allocates based on:
+    - Bucket priorities
+    - Deadlines
+    - Your financial goals
+    - Risk tolerance
+    
+    This is typically called daily or when cashing out wages.
+    """
+    service = WageService(db)
+    
+    try:
+        result = await service.allocate_daily_savings_to_buckets(
+            current_user,
+            use_ai=use_ai
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Allocation failed: {str(e)}"
+        )
+
+
+@router.post(
+    "/advance-tier",
+    summary="Advance savings tier",
+    description="Advance user to next savings tier (admin/scheduled use)."
+)
+async def advance_tier(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_async_session)
+) -> dict:
+    """
+    Advance user to the next savings tier.
+    
+    Typically called monthly by a scheduled job:
+    - Tier 1 → Tier 2: 20% → 15%
+    - Tier 2 → Tier 3: 15% → 5%
+    - Tier 3 stays at 5%
+    """
+    service = WageService(db)
+    return await service.advance_user_tier(current_user)
+
+
+@router.get(
     "/summary",
     summary="Get wage summary",
     description="Get summary of wage advances and repayments."
