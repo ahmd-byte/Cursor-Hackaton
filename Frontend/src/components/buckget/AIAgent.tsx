@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Send } from 'lucide-react';
 import { useWallet } from '../../App';
+import imgBotl from 'assets/chatbot ai.png';
 
 interface Message {
   id: string;
@@ -113,8 +114,8 @@ export function AIAgent() {
       {/* Header - Fixed at top */}
       <div className="flex-shrink-0 px-6 py-4 pt-2">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-            <span className="text-xl">🦎</span>
+          <div className="w-10 h-10 rounded-full overflow-hidden bg-white flex items-center justify-center">
+            <img src={imgBotl} alt="Botl" className="w-full h-full object-cover" />
           </div>
           <div>
             <h1 className="text-xl font-bold" style={{ fontFamily: '"Momo Trust Display", sans-serif' }}>

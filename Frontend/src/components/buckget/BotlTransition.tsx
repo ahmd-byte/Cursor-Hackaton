@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import imgBotl from 'assets/chatbot ai.png';
+import imgBotl from 'assets/IMG_6293 1.png';
 
 export function BotlTransition() {
   return (
